@@ -1,0 +1,192 @@
+ create table PERSON( driverid varchar(30),
+ name varchar(50),
+ address varchar(100),
+ primary key (driverid));
+
+
+create table CAR(regno varchar(20),
+ model varchar(30),
+ year int,
+ primary key (regno));
+
+
+create table ACCIDENT( reportnumber int,
+ accd_date date,
+ location varchar(50),
+ primary key (reportnumber));
+
+
+ create table OWNS(driverid varchar(30),
+ regno varchar(20),
+ foreign key (driverid) references PERSON,
+ foreign key(regno) references CAR);
+
+
+create table PARTICIPATED(driverid varchar(30),
+ regno varchar(20),
+ reportnumber int,
+ damage_amount int,
+ foreign key (driverid) references PERSON,
+ foreign key (regno) references CAR,
+ foreign key (reportnumber) references ACCIDENT);
+
+
+insert into PERSON values('2128','Aniket','Kolkata');
+insert into PERSON values('J773','Shruti','Bangalore');
+insert into PERSON values('J215','Sonal','Bhopal');
+insert into PERSON values('J203','Aditya','Durgapur');
+insert into PERSON values('D165','Aryan','Gurgaon');
+
+select * from PERSON;
+
+DRIVE NAME       ADDRESS
+----- ---------- ----------
+2128  Aniket     Kolkata
+J773  Shruti     Bangalore
+J215  Sonal      Bhopal
+J203  Aditya     Durgapur
+D165  Aryan      Gurgaon
+
+
+alter table PERSON modify driverid varchar(5);
+alter table PERSON modify name varchar(10);
+alter table PERSON modify address varchar(10);
+
+
+select * from CAR;
+
+
+insert into CAR values('WB01','McLaren','2025');
+insert into CAR values('KA19','Audi','2019');
+insert into CAR values('MP12','BMW','2022');
+insert into CAR values('WB36','Hyundai','2014');
+insert into CAR values('DL08','Mini Cooper','2020');
+
+REGNO MODEL              YEAR
+----- ------------ ----------
+WB01  McLaren            2025
+KA19  Audi               2019
+MP12  BMW                2022
+WB36  Hyundai            2014
+DL08  Mini Cooper        2020
+
+alter table CAR modify regno varchar(5);
+alter table CAR modify model varchar(12);
+alter table CAR modify year int;
+
+insert into ACCIDENT values(01,'01-JAN-2025','Delhi');
+insert into ACCIDENT values('02','14-FEB-2021','Colombo');
+insert into ACCIDENT values('03','21-JUN-2022','Frankfurt');
+insert into ACCIDENT values('04','07-SEP-2019','Pattaya');
+insert into ACCIDENT values('05','25-DEC-2024','Singapore');
+
+alter table ACCIDENT modify location varchar(12);
+
+select * from ACCIDENT;
+
+REPORTNUMBER ACCD_DATE LOCATION
+------------ --------- ------------
+           1 01-JAN-25 Delhi
+           2 14-FEB-21 Colombo
+           3 21-JUN-22 Frankfurt
+           4 07-SEP-19 Pattaya
+           5 25-DEC-24 Singapore
+
+insert into OWNS values('2128','WB01');
+insert into OWNS values('J773' ,'KA19');
+insert into OWNS values('J215', 'MP12');
+insert into OWNS values('J203' ,'WB36');
+insert into OWNS values('D165', 'DL08');
+
+alter table OWNS modify driverid varchar(5);
+alter table OWNS modify regno varchar(5);
+
+select * from OWNS;
+
+DRIVE REGNO
+----- -----
+2128  WB01
+J773  KA19
+J215  MP12
+J203  WB36
+D165  DL08
+
+insert into PARTICIPATED values('2128','WB01', '1', 12000);
+insert into PARTICIPATED values('J773' ,'KA19','2',15999);
+insert into PARTICIPATED values('J215', 'MP12','3',23000);
+insert into PARTICIPATED values('J203' ,'WB36','4',1350);
+insert into PARTICIPATED values('D165', 'DL08','5',8000);
+
+alter table PARTICIPATED modify driverid varchar(5);
+alter table PARTICIPATED modify regno varchar(5);
+
+select * from PARTICIPATED;
+
+DRIVE REGNO REPORTNUMBER DAMAGE_AMOUNT
+----- ----- ------------ -------------
+2128  WB01             1         12000
+J773  KA19             2         15999
+J215  MP12             3         23000
+J203  WB36             4          1350
+D165  DL08             5          8000
+
+
+SQL> update PARTICIPATED set damage_amount=25000 where reportnumber = 3;
+
+1 row updated.
+
+SQL> select * from PARTICIPATED;
+
+DRIVE REGNO REPORTNUMBER DAMAGE_AMOUNT
+----- ----- ------------ -------------
+2128  WB01             1         12000
+J773  KA19             2         15999
+J215  MP12             3         25000
+J203  WB36             4          1350
+D165  DL08             5          8000
+
+delete from PARTICIPATED where reportnumber =(select reportnumber from ACCIDENT where extract(year from accd_date)=2025);
+
+1 row deleted.
+
+ select * from PARTICIPATED;
+
+DRIVE REGNO REPORTNUMBER DAMAGE_AMOUNT
+----- ----- ------------ -------------
+J773  KA19             2         15999
+J215  MP12             3         25000
+J203  WB36             4          1350
+D165  DL08             5          8000
+
+alter table PERSON add age int;
+
+Table altered.
+
+SQL> desc person
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DRIVERID                                  NOT NULL VARCHAR2(5)
+ NAME                                               VARCHAR2(10)
+ ADDRESS                                            VARCHAR2(10)
+ AGE                                                NUMBER(38)
+
+SQL> alter table Car add colour varchar(8);
+
+Table altered.
+
+SQL> desc car
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ REGNO                                     NOT NULL VARCHAR2(5)
+ MODEL                                              VARCHAR2(12)
+ YEAR                                               NUMBER(38)
+ COLOUR                                             VARCHAR2(8)
+
+
+
+
+
+
+
+
+
