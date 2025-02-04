@@ -1,0 +1,227 @@
+create table STUDENT( regno varchar(20), name varchar(50), major varchar(20),bdate date, primary key(regno));
+create table COURSE ( course int, cname varchar(30), dept varchar(30), primary key(course));
+create table TEXT(book_isbn int, booktitle varchar(50),publisher varchar(50), author varchar(50),primary key (book_isbn));
+create table ENROLL( regno varchar(20), course int, sem int, book_isbn int, foreign key(regno) references STUDENT, foreign key(course) references COURSE, foreign key (book_isbn) references TEXT);
+create table BOOK_ADOPTION( course int, sem int, book_isbn int, foreign key(course) references COURSE, foreign key (book_isbn) references TEXT );
+
+insert into STUDENT values('20998','ANIKET','ECONOMICS','09-FEB-2001');
+insert into STUDENT values('21334','ARYAN','LITERATURE','11-JAN-2002');
+insert into STUDENT values('21889','ADRITEYO','PHYSICS','18-DEC-2000');
+insert into STUDENT values('22667','SHIVAM','MEDICINE','30-SEP-2004');
+insert into STUDENT values('23095','VARUN','COMPUTER SCIENCE','17-NOV-2005');
+
+
+insert into COURSE values(201,'MACROECONOMIES','COMMERCE');
+insert into COURSE values(389,'ROMAN HISTORY','HUMANITIES');
+insert into COURSE values(455,'QUANTUM MECHANICS','PHYSICS');
+insert into COURSE values(011,'HUMAN ANOTOMY','HEALTH SCIENCE');
+insert into COURSE values(677,'OPERATING SYSTEMS','ENGINEERING');
+
+
+insert into TEXT values(3201,'MACROECONOMY-II','PEARSON','LUCAS NEWTON');
+insert into TEXT values(1006,'THE ANCIENT ROME','PRENTICE HALL','DAVID.J');
+insert into TEXT values(9886,'QUANTAMANIA-I','CENGAGE','RAMAKRISHNA');
+insert into TEXT values(6548,' BEYOND ANOTOMY','WILEY','Dr.A.J.SINGH');
+insert into TEXT values(7700,'OPERATING SYSTEM CONCEPTS','McGRAW HILL',' SILBERSCHATZ');
+insert into TEXT values(3205,'INDIAN ECONOMY ','PEARSON','LUKE THOMSON');
+insert into TEXT values(3718,'LINUX OS','PEARSON','PRESSMAN');
+
+insert into ENROLL values('20998',201,3,3201);
+insert into ENROLL values('21334',389,2,1006);
+insert into ENROLL values('21889',455,4,9886);
+insert into ENROLL values('22667',011,1,6548);
+insert into ENROLL values('23095',677,4,7700);
+insert into ENROLL values('20998',201,3,3205);
+insert into ENROLL values('23095',677,4,3718);
+
+
+
+insert into BOOK_ADOPTION values(201,3,3201);
+insert into BOOK_ADOPTION values(389,2,1006);
+insert into BOOK_ADOPTION values(455,4,9886);
+insert into BOOK_ADOPTION values(011,1,6548);
+insert into BOOK_ADOPTION values(677,4,7700);
+insert into BOOK_ADOPTION values(201,3,3205);
+insert into BOOK_ADOPTION values(677,4,3718);
+
+
+ select * from STUDENT;
+
+REGNO                NAME
+-------------------- --------------------------------------------------
+MAJOR                BDATE
+-------------------- ---------
+20998                ANIKET
+ECONOMICS            09-FEB-01
+
+21334                ARYAN
+LITERATURE           11-JAN-02
+
+21889                ADRITEYO
+PHYSICS              18-DEC-00
+
+
+REGNO                NAME
+-------------------- --------------------------------------------------
+MAJOR                BDATE
+-------------------- ---------
+22667                SHIVAM
+MEDICINE             30-SEP-04
+
+23095                VARUN
+COMPUTER SCIENCE     17-NOV-05
+
+
+ select * from COURSE;
+
+    COURSE CNAME                          DEPT
+---------- ------------------------------ ------------------------------
+       201 MACROECONOMIES                 COMMERCE
+       389 ROMAN HISTORY                  HUMANITIES
+       455 QUANTUM MECHANICS              PHYSICS
+        11 HUMAN ANOTOMY                  HEALTH SCIENCE
+       677 OPERATING SYSTEMS              ENGINEERING
+
+select * from TEXT;
+
+ BOOK_ISBN BOOKTITLE
+---------- --------------------------------------------------
+PUBLISHER
+--------------------------------------------------
+AUTHOR
+--------------------------------------------------
+      3201 MACROECONOMY-II
+PEARSON
+LUCAS NEWTON
+
+      1006 THE ANCIENT ROME
+PRENTICE HALL
+DAVID.J
+
+ BOOK_ISBN BOOKTITLE
+---------- --------------------------------------------------
+PUBLISHER
+--------------------------------------------------
+AUTHOR
+--------------------------------------------------
+
+      9886 QUANTAMANIA-I
+CENGAGE
+RAMAKRISHNA
+
+      6548  BEYOND ANOTOMY
+WILEY
+
+ BOOK_ISBN BOOKTITLE
+---------- --------------------------------------------------
+PUBLISHER
+--------------------------------------------------
+AUTHOR
+--------------------------------------------------
+Dr.A.J.SINGH
+
+      7700 OPERATING SYSTEM CONCEPTS
+McGRAW HILL
+ SILBERSCHATZ
+
+      3205 INDIAN ECONOMY
+
+ BOOK_ISBN BOOKTITLE
+---------- --------------------------------------------------
+PUBLISHER
+--------------------------------------------------
+AUTHOR
+--------------------------------------------------
+PEARSON
+LUKE THOMSON
+
+      3718 LINUX OS
+PEARSON
+PRESSMAN
+
+
+ select * from ENROLL;
+
+REGNO                    COURSE        SEM  BOOK_ISBN
+-------------------- ---------- ---------- ----------
+20998                       201          3       3201
+21334                       389          2       1006
+21889                       455          4       9886
+22667                        11          1       6548
+23095                       677          4       7700
+20998                       201          3       3205
+23095                       677          4       3718
+
+
+
+SQL> select * from BOOK_ADOPTION;
+
+    COURSE        SEM  BOOK_ISBN
+---------- ---------- ----------
+       201          3       3201
+       389          2       1006
+       455          4       9886
+        11          1       6548
+       677          4       7700
+       201          3       3205
+       677          4       3718
+
+
+A))
+select course
+  2  from BOOK_ADOPTION
+  3  group by course
+  4  having count (BOOK_ISBN) >1;
+
+    COURSE
+----------
+       677
+       201
+
+
+B))
+SELECT C.DEPT
+    FROM COURSE C
+    WHERE NOT EXISTS(
+    SELECT *
+    FROM BOOK_ADOPTION BA
+    JOIN TEXT T ON BA.BOOK_ISBN = T.BOOK_ISBN
+    WHERE C.COURSE=BA.COURSE
+    AND T.PUBLISHER='CENGAGE');
+
+
+DEPT
+------------------------------
+COMMERCE
+HUMANITIES
+HEALTH SCIENCE
+ENGINEERING
+
+
+
+C))
+ SELECT E.REGNO
+  2  FROM ENROLL E, COURSE C
+  3  WHERE E.COURSE = C.COURSE
+  4  GROUP BY E.REGNO
+  5  HAVING COUNT(DISTINCT C.DEPT)>1;
+
+no rows selected
+
+
+D))
+ SELECT S.NAME
+  2  FROM STUDENT S
+  3  WHERE S.REGNO NOT IN (
+  4  SELECT E.REGNO
+  5  FROM ENROLL E
+  6  );
+
+no rows selected
+
+
+
+
+
+
+
