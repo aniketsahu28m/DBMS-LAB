@@ -1,0 +1,71 @@
+ 
+LAB 4
+
+select COUNT (distinct driverid)
+ from PARTICIPATED natural join OWNS
+ where (REPORTNUMBER) IN
+ (select REPORTNUMBER
+ from ACCIDENT
+ where extract (YEAR from ACCD_DATE)=2024);
+
+
+SQL> select COUNT (distinct driverid)
+  2   from PARTICIPATED natural join OWNS
+  3   where (REPORTNUMBER) IN
+  4   (select REPORTNUMBER
+  5   from ACCIDENT
+  6   where extract (YEAR from ACCD_DATE)=2024);
+
+COUNT(DISTINCTDRIVERID)
+-----------------------
+                      1
+
+
+select count (REPORTNUMBER)
+from ACCIDENT natural join PARTICIPATED
+where (REGNO) IN
+(select REGNO
+from CAR
+where MODEL = 'Audi');
+
+
+SQL> select count (REPORTNUMBER)
+  2  from ACCIDENT natural join PARTICIPATED
+  3  where (REGNO) IN
+  4  (select REGNO
+  5  from CAR
+  6  where MODEL = 'Audi');
+
+COUNT(REPORTNUMBER)
+-------------------
+                  1
+
+
+select NAME as OWNER_NAME, COUNT (REPORTNUMBER) as No_Of_Accident ,DAMAGE_AMOUNT as Total_Damage_Amount 
+from PERSON natural join PARTICIPATED
+group by NAME, REPORTNUMBER, DAMAGE_AMOUNT
+order by DAMAGE_AMOUNT desc;
+
+
+SQL> select NAME as OWNER_NAME, COUNT (REPORTNUMBER) as No_Of_Accident ,DAMAGE_AMOUNT as Total_Damage_Amount
+  2  from PERSON natural join PARTICIPATED
+  3  group by NAME, REPORTNUMBER, DAMAGE_AMOUNT
+  4  order by DAMAGE_AMOUNT desc;
+
+OWNER_NAME NO_OF_ACCIDENT TOTAL_DAMAGE_AMOUNT
+---------- -------------- -------------------
+Sonal                   1               25000
+Shruti                  1               15999
+Aryan                   1                8000
+Aditya                  1                1350
+
+
+
+select NAME, COUNT (REPORTNUMBER)
+from PERSON natural join PARTICIPATED
+group by NAME, REPORTNUMBER
+having COUNT( REPORTNUMBER)>=2;
+
+
+
+
